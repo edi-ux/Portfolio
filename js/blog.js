@@ -1,7 +1,6 @@
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const revealPosts = (elements) => {
-    // FIX #1: convertim NodeList la Array pentru siguranta
     const els = Array.from(elements);
     if (!els.length) {
         return;
@@ -30,7 +29,6 @@ const revealPosts = (elements) => {
 
             entry.target.style.opacity = "1";
             entry.target.style.transform = "translateY(0)";
-            // FIX #2: marcam ca revealed pentru a evita conflictul cu hover
             entry.target.dataset.revealed = "true";
             observer.unobserve(entry.target);
         });
@@ -45,8 +43,6 @@ const addMagneticLinks = () => {
     }
 
     document.querySelectorAll(".hero-link, .post-footer a").forEach((link) => {
-        // FIX #3: nu setam transition inline aici ca sa nu suprascriem
-        // alte transition-uri setate din alta parte (ex: CSS)
         link.addEventListener("mousemove", (event) => {
             const rect = link.getBoundingClientRect();
             const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
@@ -68,8 +64,6 @@ articleLinks.forEach((link) => {
         const card = link.closest(".post-card");
         const title = card?.querySelector("h4")?.textContent ?? "This article";
 
-        // FIX #4: salvam textul original pentru a putea reveni daca e nevoie
-        // si folosim innerHTML pentru a nu pierde eventuale iconite SVG
         const svg = link.querySelector("svg");
         link.innerHTML = "";
         if (svg) link.appendChild(svg);
@@ -78,8 +72,6 @@ articleLinks.forEach((link) => {
         link.setAttribute("aria-label", `${title} is coming soon`);
         link.style.color = "#2f855a";
 
-        // FIX #5: dezactivam magnetic hover dupa click ca sa nu mai
-        // miște un link care nu mai e activ
         link.style.pointerEvents = "none";
     });
 });
@@ -96,7 +88,6 @@ const posts = Array.from(document.querySelectorAll(".featured-post, .side-post, 
 revealPosts(posts);
 addMagneticLinks();
 
-// FIX #2: hover verificat daca reveal s-a terminat
 if (!prefersReducedMotion) {
     posts.forEach((post) => {
         post.addEventListener("mouseenter", () => {
